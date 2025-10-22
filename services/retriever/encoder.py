@@ -31,7 +31,7 @@ def get_embedding(text: str) -> List[float]:
     if not text:
         raise ValueError("Cannot embed empty text.")
 
-    # ✅ Option 1: Use OpenAI
+    # Option 1: Use OpenAI
     if _USE_OPENAI:
         resp = client.embeddings.create(
             model="text-embedding-3-small",  # or "text-embedding-3-large"
@@ -39,11 +39,11 @@ def get_embedding(text: str) -> List[float]:
         )
         return resp.data[0].embedding
 
-    # ✅ Option 2: Use local model
+    # Option 2: Use local model
     if local_model:
         return local_model.encode(text).tolist()
 
-    # ❌ Fallback: no embedding backend available
+    # Fallback: no embedding backend available
     raise RuntimeError(
         "No embedding backend found. Install `openai` or `sentence-transformers`."
     )

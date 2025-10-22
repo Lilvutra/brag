@@ -22,3 +22,9 @@ blockchain-rag/
 ├─ ci/
 │ └─ pipeline.yml
 └─ README.md
+
+📥 Ingestion → 📚 Chunk → 🧠 Embed → 📊 Store in Vector DB
+                                     ↓
+                              🔐 Merkle root → ⛓️ Anchor on-chain
+
+📤 Query → 🔍 Retrieve vectors → 🧠 RAG answer → ✅ Verify with root
