@@ -1,7 +1,8 @@
 # To improve search efficiency, we chunk documents into smaller pieces, embed them into vectors, and store them in a vector database (ChromaDB). 
 # We then anchor the Merkle root of the stored data on-chain for integrity verification.
 import hashlib
-from web3 import Web3
+#placeholder import for further development
+#from web3 import Web3
 # Indexer: chunk documents, embed, insert into vector DB, then anchor merkle root on chain
 # pseudo_chunk function
 
@@ -10,8 +11,9 @@ from typing import List, Dict, Iterable, Optional
 
 import chromadb
 from chromadb.config import Settings
-from web3.exceptions import TransactionNotFound
+#from web3.exceptions import TransactionNotFound
 
+# Clean package imports - no path manipulation needed!
 from services.retriever.encoder import get_embedding
 
 
@@ -121,7 +123,7 @@ def chunk_words_with_overlap(text: str, size: int = 500, overlap: int = 50) -> L
     # size: number of words per chunk
     # overlap: number of overlapping words between consecutive chunks
     # note: there are limits
-    
+   
     if not text:
         return []
     if size <= 0:

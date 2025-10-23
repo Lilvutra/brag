@@ -76,16 +76,16 @@ async def query(req: QueryRequest):
         
         # Call retriever service
         try:
-            from retriever.retriever import retrieve
-            chunks = retrieve(req.query, top_k=5)
+            from services.retriever import retrieve
+            chunks = retrieve(req.query, top_k=5) #return 5 most relevant chunks
             logger.info(f"RETRIEVAL_SUCCESS - ID: {request_id} | Retrieved {len(chunks)} chunks")
         except Exception as e:
             log_query_error(request_id, f"Retrieval failed: {str(e)}", "RETRIEVAL_ERROR")
             raise HTTPException(status_code=500, detail=f"Retrieval failed: {str(e)}")
-        
+       
         # Call LLM orchestrator
         try:
-            from llm.orchestrator import run_llm 
+            from services.llm import run_llm 
             answer, actions = run_llm(req.query, chunks)
             logger.info(f"LLM_SUCCESS - ID: {request_id} | Answer generated, actions: {len(actions) if actions else 0}")
         except Exception as e:

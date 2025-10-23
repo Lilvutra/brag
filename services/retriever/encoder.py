@@ -2,19 +2,43 @@
 from typing import List
 import os
 
+# Secure API key handling - NEVER hardcode keys in production
+def _get_openai_client():
+    """Safely initialize OpenAI client with environment variable."""
+    api_key = os.getenv("OPENAI_API_KEY")
+    if not api_key:
+        raise RuntimeError(
+            "OPENAI_API_KEY environment variable not set. "
+            "Please set it in your .env file or environment: export OPENAI_API_KEY=your_key_here"
+        )
+    if api_key.startswith("sk-") and len(api_key) < 20:
+        raise RuntimeError(
+            "Invalid OpenAI API key format. Please check your OPENAI_API_KEY environment variable."
+        )
+    return api_key
+
 # If you want OpenAI embeddings (requires `pip install openai`)
 try:
     from openai import OpenAI
     _USE_OPENAI = True
-    client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+    try:
+        api_key = _get_openai_client()
+        client = OpenAI(api_key=api_key)
+    except RuntimeError as e:
+        print(f"⚠️ OpenAI client initialization failed: {e}")
+        _USE_OPENAI = False
+        client = None
 except ImportError:
+    print("⚠️ OpenAI package not installed. Install with: pip install openai")
     _USE_OPENAI = False
+    client = None
 
 # Optional: fallback to local embeddings
 try:
     from sentence_transformers import SentenceTransformer
     local_model = SentenceTransformer("all-MiniLM-L6-v2")
 except ImportError:
+    print("⚠️ sentence-transformers package not installed. Install with: pip install sentence-transformers")
     local_model = None
 
 
