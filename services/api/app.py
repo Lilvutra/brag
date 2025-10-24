@@ -43,7 +43,8 @@ class QueryRequest(BaseModel):
     wallet: str
     query: str
     options: dict = {}
-
+    
+#list of expected sources/values for the response 
 class QueryResponse(BaseModel):
     request_id: str
     answer: str

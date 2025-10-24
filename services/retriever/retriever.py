@@ -5,14 +5,13 @@ from openai import OpenAI # embedding provider
 
 # pseudo code for retriever service
 # adapt the embedding provider 
+from services.retriever.encoder import get_embedding
 
 client = Client(Settings())
 collection = client.get_or_create_collection(name="my_collection")
 
 def retrieve(query: str, top_k: int = 5):
-    # get embedding(use OpenAI?)
-    from embeddings.encoder import get_embedding
-    
+    # get embedding(use OpenAI)
     q_emb = get_embedding(query)
     results = collection.query(query_embeddings=[q_emb], n_results=top_k)
     

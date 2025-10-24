@@ -1,8 +1,9 @@
 # To improve search efficiency, we chunk documents into smaller pieces, embed them into vectors, and store them in a vector database (ChromaDB). 
 # We then anchor the Merkle root of the stored data on-chain for integrity verification.
 import hashlib
-#placeholder import for further development
-#from web3 import Web3
+# placeholder import for further development
+# from web3 import Web3
+
 # Indexer: chunk documents, embed, insert into vector DB, then anchor merkle root on chain
 # pseudo_chunk function
 
@@ -11,10 +12,17 @@ from typing import List, Dict, Iterable, Optional
 
 import chromadb
 from chromadb.config import Settings
-#from web3.exceptions import TransactionNotFound
 
-# Clean package imports - no path manipulation needed!
-from services.retriever.encoder import get_embedding
+import pdfplumber
+import PyPDF2
+import trafilatura
+import requests
+import tiktoken
+import hashlib 
+from bs4 import BeautifulSoup
+import argparse
+
+from ..retriever.encoder import get_embedding
 
 
 # -------- Text extraction from various sources --------
@@ -33,7 +41,6 @@ def extract_text_from_url(url: str) -> str:
    
     # Option 1: trafilatura (excellent for protocol documentation)
     try:
-        import trafilatura
         downloaded = trafilatura.fetch_url(url)
         if downloaded:
             text = trafilatura.extract(downloaded, include_comments=False, include_tables=True)
@@ -44,8 +51,6 @@ def extract_text_from_url(url: str) -> str:
     
     # Option 2: BeautifulSoup fallback
     try:
-        import requests
-        from bs4 import BeautifulSoup
         
         headers = {
             'User-Agent': 'Mozilla/5.0 (compatible; Protocol-Doc-Indexer/1.0)'
@@ -85,7 +90,6 @@ def extract_text_from_pdf(pdf_path: str) -> str:
 
     # Option 1: pdfplumber
     try:
-        import pdfplumber  # type: ignore
         text_parts: List[str] = []
         with pdfplumber.open(pdf_path) as pdf:
             for page in pdf.pages:
@@ -97,7 +101,6 @@ def extract_text_from_pdf(pdf_path: str) -> str:
 
     # Option 2: PyPDF2
     try:
-        import PyPDF2  # type: ignore
         text_parts = []
         with open(pdf_path, "rb") as fh:
             reader = PyPDF2.PdfReader(fh)
@@ -111,7 +114,7 @@ def extract_text_from_pdf(pdf_path: str) -> str:
         ) from e
 
 
-def chunk_text(text, size=500): #500 words per chunk first
+def chunk_text(text, size=500): # 500 words per chunk first
     # word-based chunking: split by words and produce chunks with up to `size` words each
     words = text.split()
     if not words: return []
@@ -147,11 +150,7 @@ def chunk_by_tokens(text: str, size_tokens: int = 1024, overlap_tokens: int = 12
                     encoding_name: str = "cl100k_base") -> List[str]:
     
     # chunk text by tokens using tiktoken
-    try:
-        import tiktoken
-    except Exception as e: #could implement fallback 
-        raise ImportError("tiktoken is required for token-based chunking. Install via `pip install tiktoken`") from e
-        
+   
     enc = tiktoken.get_encoding(encoding_name)
     # encode -> list[int]
     token_ids = enc.encode(text)
@@ -255,7 +254,6 @@ def index_url(url: str,
 
 
 if __name__ == "__main__":
-    import argparse
 
     parser = argparse.ArgumentParser(description="Index PDF files or protocol documentation URLs into Chroma")
     parser.add_argument("input", help="Path to a PDF file or URL to protocol documentation")
