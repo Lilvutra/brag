@@ -19,7 +19,7 @@ try:
     api_key = _get_openai_client()
     client = OpenAI(api_key=api_key)
 except RuntimeError as e:
-    print(f"⚠️ OpenAI client initialization failed: {e}")
+    print(f"OpenAI client initialization failed: {e}")
     _USE_OPENAI = False
     client = None
 

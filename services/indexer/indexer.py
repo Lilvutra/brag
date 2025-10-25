@@ -47,8 +47,6 @@ def extract_text_from_url(url: str) -> str:
         text = trafilatura.extract(downloaded, include_comments=False, include_tables=True)
         if text and text.strip():
             return text.strip()
-   
-    
     # BeautifulSoup 
 
 

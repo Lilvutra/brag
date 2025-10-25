@@ -34,7 +34,7 @@ def retrieve(query: str, top_k: int = 1):
     best_chunk = min(chunks, key=lambda x: x["distance"])
     print("best_chunk content:", best_chunk["content"])
     
-    return best_chunk
+    return best_chunk # currently test with most relevant chunk but we want to feed top-k chunks to llm 
 
 retrieve("How does Ethereum handle liquidity?")
 
