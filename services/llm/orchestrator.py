@@ -10,6 +10,9 @@ def run_llm(query, chunks):
     answer = f"(prototype) Answer based on {len(chunks)} chunks"
     actions = None 
     
+    
+    
+    
     # Heuristic: if prompt contains "sth", we trigger on-chain action
     if "transfer" in query.lower() or "send" in query.lower():
         actions = [{"type": "transfer", "to": "0xABC...", "amount": "10 ETH"}]

@@ -12,6 +12,7 @@ from typing import List, Dict, Iterable, Optional
 
 import chromadb
 from chromadb.config import Settings
+from ..chroma_storage.chroma_config import get_chroma_client
 
 import pdfplumber
 import PyPDF2
@@ -39,42 +40,16 @@ def extract_text_from_url(url: str) -> str:
     if not url or not url.startswith(('http://', 'https://')):
         raise ValueError(f"Invalid URL: {url}")
    
-    # Option 1: trafilatura (excellent for protocol documentation)
-    try:
-        downloaded = trafilatura.fetch_url(url)
-        if downloaded:
-            text = trafilatura.extract(downloaded, include_comments=False, include_tables=True)
-            if text and text.strip():
-                return text.strip()
-    except Exception:
-        pass
+    # trafilatura  
+
+    downloaded = trafilatura.fetch_url(url)
+    if downloaded:
+        text = trafilatura.extract(downloaded, include_comments=False, include_tables=True)
+        if text and text.strip():
+            return text.strip()
+   
     
-    # Option 2: BeautifulSoup fallback
-    try:
-        
-        headers = {
-            'User-Agent': 'Mozilla/5.0 (compatible; Protocol-Doc-Indexer/1.0)'
-        }
-        response = requests.get(url, headers=headers, timeout=30)
-        response.raise_for_status()
-        
-        soup = BeautifulSoup(response.content, 'html.parser')
-        
-        # Remove unwanted elements (ads, nav, etc.)
-        for element in soup(['script', 'style', 'nav', 'footer', 'header', 'aside', 'advertisement']):
-            element.decompose()
-        
-        # Try to find main content area (common in protocol docs)
-        main_content = soup.find('main') or soup.find('article') or soup.find('div', class_=['content', 'post', 'entry'])
-        if main_content:
-            return main_content.get_text(separator='\n', strip=True)
-        else:
-            return soup.get_text(separator='\n', strip=True)
-            
-    except Exception as e:
-        raise RuntimeError(
-            "Could not extract text from URL. Install: `pip install trafilatura` or `pip install requests beautifulsoup4`"
-        ) from e
+    # BeautifulSoup 
 
 
 def extract_text_from_pdf(pdf_path: str) -> str:
@@ -88,7 +63,7 @@ def extract_text_from_pdf(pdf_path: str) -> str:
     if not pdf_path or not os.path.exists(pdf_path):
         raise FileNotFoundError(f"PDF not found: {pdf_path}")
 
-    # Option 1: pdfplumber
+    # pdfplumber
     try:
         text_parts: List[str] = []
         with pdfplumber.open(pdf_path) as pdf:
@@ -99,7 +74,7 @@ def extract_text_from_pdf(pdf_path: str) -> str:
     except Exception:
         pass
 
-    # Option 2: PyPDF2
+    # PyPDF2
     try:
         text_parts = []
         with open(pdf_path, "rb") as fh:
@@ -163,7 +138,7 @@ def chunk_by_tokens(text: str, size_tokens: int = 1024, overlap_tokens: int = 12
 
 # -------- Indexing pipeline for a single PDF --------
 def _ensure_collection(collection_name: str = "my_collection"):
-    client = chromadb.Client(Settings())
+    client = get_chroma_client()
     return client.get_or_create_collection(name=collection_name)
 
 
@@ -190,7 +165,9 @@ def _index_text(text: str, source: str, source_type: str,
                 collection_name: str = "my_collection",
                 chunk_size_words: int = 500,
                 overlap_words: int = 50) -> Dict[str, Optional[str]]:
-    """Core indexing logic: chunk, embed, and upsert text into Chroma."""
+    """Core indexing logic: chunk, embed, and insert text into Chroma.
+    placeholder for later on-chain anchoring"""
+    
     chunks = chunk_words_with_overlap(text, size=chunk_size_words, overlap=overlap_words)
     if not chunks:
         return {"added": "0", "merkle_root": None}
@@ -216,6 +193,11 @@ def _index_text(text: str, source: str, source_type: str,
         })
         content_hashes.append(_hash_bytes(chunk.encode("utf-8")))
 
+    #print("embeddings:", embeddings)
+    #print("documents:", documents)
+    #print("metadatas:", metadatas)
+    #print("checky")
+    
     collection.add(ids=ids, documents=documents, metadatas=metadatas, embeddings=embeddings)
 
     merkle_root = _compute_merkle_root(content_hashes)
@@ -262,7 +244,7 @@ if __name__ == "__main__":
     parser.add_argument("--overlap", type=int, default=50, help="Chunk overlap in words")
     args = parser.parse_args()
 
-    # Auto-detect input type
+    # detect input type
     if args.input.startswith(('http://', 'https://')):
         print(f"Indexing URL: {args.input}")
         result = index_url(args.input, collection_name=args.collection, chunk_size_words=args.size, overlap_words=args.overlap)

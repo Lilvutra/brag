@@ -29,18 +29,14 @@ except RuntimeError as e:
 
 def get_embedding(text: str) -> List[float]:
     """
-    Convert text into an embedding vector.
-
-    Priority:
-    1. Use OpenAI if installed and API key present
-    2. Else, use local sentence-transformers model if available
-    3. Else, raise an error
+    Convert text into an embedding vector using OpenAI if installed and API key present
+    might use local sentence-transformers model if available
     """
     text = text.strip()
     if not text:
         raise ValueError("Cannot embed empty text.")
 
-    # Option 1: Use OpenAI
+    # Use OpenAI
     if _USE_OPENAI:
         resp = client.embeddings.create(
             model="text-embedding-3-small",  # or "text-embedding-3-large"
