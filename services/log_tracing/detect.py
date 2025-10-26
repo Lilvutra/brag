@@ -1,5 +1,6 @@
 from collections import Counter
 import time
+# For further development, we want to detect protocol behaviour 
 
 def detect_abnormal_event_spikes(logs):
     topic_counts = Counter(log['topics'][0] for log in logs)

@@ -1,11 +1,10 @@
 # To improve search efficiency, we chunk documents into smaller pieces, embed them into vectors, and store them in a vector database (ChromaDB). 
-# We then anchor the Merkle root of the stored data on-chain for integrity verification.
+# We then anchor the Merkle root of the stored data on-chain for integrity verification later.
 import hashlib
 # placeholder import for further development
 # from web3 import Web3
 
 # Indexer: chunk documents, embed, insert into vector DB, then anchor merkle root on chain
-# pseudo_chunk function
 
 import os
 from typing import List, Dict, Iterable, Optional 
@@ -26,7 +25,6 @@ import argparse
 from ..retriever.encoder import get_embedding
 
 
-# -------- Text extraction from various sources --------
 def extract_text_from_url(url: str) -> str:
     """Extract text from a protocol documentation blog/URL.
     
@@ -242,7 +240,6 @@ if __name__ == "__main__":
     parser.add_argument("--overlap", type=int, default=50, help="Chunk overlap in words")
     args = parser.parse_args()
 
-    # detect input type
     if args.input.startswith(('http://', 'https://')):
         print(f"Indexing URL: {args.input}")
         result = index_url(args.input, collection_name=args.collection, chunk_size_words=args.size, overlap_words=args.overlap)

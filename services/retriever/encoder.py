@@ -1,9 +1,8 @@
-# services/retriever/embeddings/encoder.py
 from typing import List
 import os
 from openai import OpenAI
 
-# Secure API key handling - NEVER hardcode keys in production
+# API key handling with variable set
 def _get_openai_client():
     """Safely initialize OpenAI client with environment variable."""
     api_key = os.getenv("OPENAI_API_KEY")
@@ -24,8 +23,7 @@ except RuntimeError as e:
     client = None
 
 
-# Optional: fallback to local embeddings
-
+# fallback to local embeddings
 
 def get_embedding(text: str) -> List[float]:
     """
@@ -39,16 +37,15 @@ def get_embedding(text: str) -> List[float]:
     # Use OpenAI
     if _USE_OPENAI:
         resp = client.embeddings.create(
-            model="text-embedding-3-small",  # or "text-embedding-3-large"
+            model="text-embedding-3-small",  
             input=text
         )
         return resp.data[0].embedding
 
-    # Option 2: Use local model
+    # Use local model
     #if local_model:
         #return local_model.encode(text).tolist()
 
-    # Fallback: no embedding backend available
     raise RuntimeError(
         "No embedding backend found. Install `openai` or `sentence-transformers`."
     )
