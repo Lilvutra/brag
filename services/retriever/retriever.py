@@ -1,11 +1,7 @@
-# minimal Chroma retriever example 
 from chromadb import Client 
 from chromadb.config import Settings
 from openai import OpenAI 
 
-# pseudo code for retriever service
-# adapt the embedding provider 
-#from services.retriever.encoder import get_embedding
 from ..retriever.encoder import get_embedding
 from ..chroma_storage.chroma_config import get_chroma_client
 
@@ -17,7 +13,6 @@ print("Sample stored items:", all_items) # get collection storage items
 
 # query embedding
 def retrieve(query: str, top_k: int = 1):
-    # get embedding(OpenAI)
     q_emb = get_embedding(query)
     results = collection.query(query_embeddings=[q_emb], n_results=top_k)
     

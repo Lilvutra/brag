@@ -1,10 +1,10 @@
 blockchain-rag/
 ├─ services/
-│ ├─ api/ # FastAPI service
+│ ├─ api/ # FastAPI 
 │ │ ├─ app.py
 │ │ ├─ schemas.py
 │ │ └─ requirements.txt
-│ ├─ retriever/ # retrieval microservice (Chroma or Pinecone)
+│ ├─ retriever/ # retrieval microservice 
 │ │ ├─ retriever.py
 │ │ └─ requirements.txt
 │ ├─ indexer/ # ingestion, embedder, anchoring
@@ -22,9 +22,3 @@ blockchain-rag/
 ├─ ci/
 │ └─ pipeline.yml
 └─ README.md
-
-📥 Ingestion → 📚 Chunk → 🧠 Embed → 📊 Store in Vector DB
-                                     ↓
-                              🔐 Merkle root → ⛓️ Anchor on-chain
-
-📤 Query → 🔍 Retrieve vectors → 🧠 RAG answer → ✅ Verify with root

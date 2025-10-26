@@ -134,7 +134,7 @@ def chunk_by_tokens(text: str, size_tokens: int = 1024, overlap_tokens: int = 12
     return chunks
 
 
-# -------- Indexing pipeline for a single PDF --------
+# Indexing pipeline for a single PDF 
 def _ensure_collection(collection_name: str = "my_collection"):
     client = get_chroma_client()
     return client.get_or_create_collection(name=collection_name)

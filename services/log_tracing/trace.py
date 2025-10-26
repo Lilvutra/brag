@@ -14,14 +14,7 @@ FACTORY = "0x7d2768dE32b0b80b7a3454c06BdAc94A69DDc7A9" # Aave pool
 Scope: Tied to a specific transaction (Tx hash).
 What events were emitted during that transaction’s execution.
 Inspect what happened during a given function call (Deposit, Borrow, Swap, etc.).
-
-You check 0x123...txhash → see Borrow(address user, uint256 amount) event emitted by Aave.
-
-Data source:
-
-eth_getTransactionReceipt
-
-Returns logs only for that one transaction."""
+"""
 
 def get_logs(contract_address, from_block, to_block="latest"):
     params = {
