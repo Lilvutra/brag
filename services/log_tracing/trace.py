@@ -92,6 +92,8 @@ def aggregate_protocol_logs(contract_addresses, from_block):
 
 #print("Detected new contracts:", contracts)
 #print("get logs:", get_logs(FACTORY, 21000000))
-logs_result = get_logs(FACTORY, 21000000)
+
+#logs_result = get_logs(FACTORY, 21000000)
+
 #print(get_stats(FACTORY))
-print(fetch_abi_from_logs(logs_result))
+#print(fetch_abi_from_logs(logs_result))

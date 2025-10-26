@@ -13,7 +13,7 @@ client = get_chroma_client()
 collection = client.get_or_create_collection(name="protocol_docs")
 print("col count:", collection.count())
 all_items = collection.get(limit=3)
-print("Sample stored items:", all_items)
+print("Sample stored items:", all_items) # get collection storage items
 
 # query embedding
 def retrieve(query: str, top_k: int = 1):
@@ -36,7 +36,7 @@ def retrieve(query: str, top_k: int = 1):
     
     return best_chunk # currently test with most relevant chunk but we want to feed top-k chunks to llm 
 
-retrieve("How does Ethereum handle liquidity?")
+#retrieve("How does Aave protocol handle liquidity?")
 
 
 

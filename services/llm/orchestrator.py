@@ -46,14 +46,16 @@ def protocol_analyze(factory_contract, query):
     # For each address in logs, fetch its ABI
     abis = fetch_abi_from_logs(logs)
     
-    
+    #docs_context = "\n".join(c.get("text", "") for c in chunks)
+    abi_logs = json.dumps(abis, indent=2)
+
     # Build unified context
     context = f"""
     Protocol Docs Context:
-    {"\n".join([c['text'] for c in chunks])}
+    {chunks}
     
     ABI from logs data:
-    {json.dumps(abis, indent=2)}
+    {abi_logs}
     
     """
     
@@ -70,10 +72,7 @@ def protocol_analyze(factory_contract, query):
     response = llm_generate(prompt)
     return response
 
-    
-    
-    
-    
+print("protocol analysis:", protocol_analyze("0x7d2768dE32b0b80b7a3454c06BdAc94A69DDc7A9", "Analyze Aave protocol?" ))
     
     
     
