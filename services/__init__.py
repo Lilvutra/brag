@@ -1,7 +1,6 @@
 """
-Blockchain RAG System Services Package
 
-This package contains all the microservices for the blockchain RAG system:
+This package contains all the microservices for Brag system:
 - api: FastAPI gateway and request handling
 - retriever: Vector search and embedding services  
 - indexer: Document processing and indexing
@@ -9,4 +8,4 @@ This package contains all the microservices for the blockchain RAG system:
 """
 
 __version__ = "1.0.0"
-__author__ = "Blockchain RAG Team"
+__author__ = "Braggy"
